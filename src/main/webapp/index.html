@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:100,200,300,medium,500,600,700,100italic,200italic,300italic,italic,500italic,600italic,700italic&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список Цветов</title>
+    <script>
+        function addFlower() {
+            var flower = {
+                name: document.getElementById('name').value,
+                sort: document.getElementById('sort').value,
+                color: document.getElementById('color').value,
+                live: document.getElementById('live').value,
+                red_book: document.getElementById('red_book').value
+            };
+            fetch('/FlowerServlet', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(flower)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    getFlowers();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function getFlowers() {
+            fetch('/FlowerServlet')
+                .then(response => response.json())
+                .then(data => {
+                    var flowersTable = document.createElement('table');
+                    flowersTable.style.color = 'white'; // Установка цвета текста таблицы в белый
+
+                    flowersTable.innerHTML = '<tr><th>Название</th><th>Сорт</th><th>Цвет</th><th>Где растет</th><th>Красная книга</th></tr>';
+                    data.flowers.forEach(flower => {
+                        var row = flowersTable.insertRow();
+                        row.innerHTML = '<td>' + flower.name + '</td><td>' + flower.sort + '</td><td>' + flower.color + '</td><td>' + flower.live + '</td><td>' + flower.red_book + '</td>';
+                    });
+                    var flowersList = document.getElementById('flowersList');
+                    flowersList.innerHTML = '';
+                    flowersList.appendChild(flowersTable);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', getFlowers);
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <main class="main">
+        <section class="service">
+            <div class="service__container">
+                <div class="service__content">
+                    <div class="service___block-text block-text">
+                        <div id="close" class="header__container">
+                            <img width="100px" src="img/1.svg" alt="Логотип" class="logo__svg">
+                            <h1 class="block-text__title">FLOWERS</h1>
+                        </div>
+                    </div>
+                    <form onsubmit="addFlower(); return false;">
+                        <input type="text" id="name" placeholder="Название" required>
+                        <input type="text" id="sort" placeholder="Сорт" required>
+                        <input type="text" id="color" placeholder="Цвет" required>
+                        <input type="text" id="live" placeholder="Где растет" required>
+                        <input type="text" id="red_book" placeholder="Красная книга" required>
+                        <button onclick="getFlowers();" style="background-color: #4499D9; /* Зеленый */
+border: none;
+color: white;
+padding: 15px 32px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 16px;
+margin: 4px 2px;
+cursor: pointer;">Показать список цветов</button>
+
+                        <button onclick="addFlower();" style="background-color: #4499D9; /* Зеленый */
+border: none;
+color: white;
+padding: 15px 32px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 16px;
+margin: 4px 2px;
+cursor: pointer;">Добавить цветок</button>
+<!--                        <div class="header__button" >-->
+<!--                            <a href="" class="button">list</a>-->
+<!--                        </div>-->
+                    </form>
+
+                    <ul id="flowersList"></ul>
+                    <img width="300px" src="img/111.svg" alt="Цветок 5">
+                    <img width="500px" src="img/1.svg" alt="Цветок 1">
+                    <img width="300px"src="img/2.svg" alt="Цветок 4">
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="copyright">
+            <p>© Copyright Tupota 2024</p>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
